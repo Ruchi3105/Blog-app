@@ -4,13 +4,7 @@ const Post = require("../models/postModel");
 
 router.post("/create", async (req, res) => {
   try {
-    const post = await Post.create({
-      title: req.body.title,
-      desc: req.body.desc,
-      username: req.body.username,
-      categories: req.body.categories,
-      photo: req.body.photo,
-    });
+    const post = await Post.create(req.body);
     res.status(200).json(post);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -59,7 +53,7 @@ router.get("/:id", async (req, res) => {
 });
 
 router.get("/", async (req, res) => {
-  const username = req.query.user;
+  const username = req.query.users;
   const catName = req.query.cat;
   try {
     let post;

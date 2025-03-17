@@ -6,8 +6,8 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="fixed top-4 left-1/2 transform -translate-x-1/2 w-[90%] md:w-[80%] lg:w-[70%] bg-slate-800 backdrop-blur-md shadow-lg rounded-full z-50 transition-all border border-white/10">
-      <div className="flex justify-between items-center px-5 py-7 relative text-white">
+    <nav className="fixed top-4 left-1/2 transform -translate-x-1/2 w-[90%] md:w-[80%] lg:w-[70%] bg-slate-800 backdrop-blur-md shadow-lg rounded-full z-50 transition-all border border-white/10 px-6 h-20">
+      <div className="flex justify-around items-center  relative text-white top-5 ">
         {/* Logo */}
         <Link to="/" className="text-xl font-semibold">
           MyBrand

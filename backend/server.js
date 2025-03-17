@@ -2,8 +2,10 @@ const express = require("express");
 const dotenv = require("dotenv").config();
 const connectDB = require("./config/dbConnection");
 const multer = require("multer");
+const cors = require("cors");
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 connectDB();
