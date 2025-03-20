@@ -2,19 +2,30 @@ import { createContext, useEffect, useReducer } from "react";
 import Reducer from "./Reducer";
 
 const INITIAL_STATE = {
-  user: JSON.parse(localStorage.getItem("user")) || null,
+  user: null,
   isFetching: false,
   error: false,
 };
 
-export const Context = createContext(INITIAL_STATE);
+const Context = createContext(INITIAL_STATE);
 
-export const ContextProvider = ({ children }) => {
+const ContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(Reducer, INITIAL_STATE);
 
   useEffect(() => {
-    localStorage.setItem("user", JSON.stringify(state.user));
-  },[state.user]);
+    const fetchUser = async () => {
+      try {
+        const res = await fetch("/api/auth/me", { credentials: "include" });
+        const data = await res.json();
+        if (data.user) {
+          dispatch({ type: "LOGIN_SUCCESS", payload: data.user });
+        }
+      } catch (err) {
+        dispatch({ type: "LOGIN_FAILURE" });
+      }
+    };
+    fetchUser();
+  }, []);
 
   return (
     <Context.Provider
@@ -29,3 +40,5 @@ export const ContextProvider = ({ children }) => {
     </Context.Provider>
   );
 };
+
+export { Context, ContextProvider };

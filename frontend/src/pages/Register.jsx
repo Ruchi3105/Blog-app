@@ -1,25 +1,36 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Register = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(false);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false);
+  const navigate = useNavigate();
+
   const handleRegister = async (e) => {
     e.preventDefault();
     setError(false);
+    setSuccess(false);
 
     try {
-      const res = await axios.post("/api/auth/register", {
-        username,
-        email,
-        password,
-      });
-      res.data && window.location.replace("/login");
+      const res = await axios.post(
+        "/api/auth/register",
+        {
+          username,
+          email,
+          password,
+        },
+        { withCredentials: true }
+      );
+      if (res.data) {
+        setSuccess(true);
+        navigate('/login')
+      }
     } catch (err) {
-      setError(err);
+      setError(err.response?.data?.message || "Something went wrong");
     }
   };
   return (
@@ -32,6 +43,7 @@ const Register = () => {
           type="text"
           onChange={(e) => setUsername(e.target.value)}
           placeholder="Enter your username..."
+          required
         />
 
         <label htmlFor="">Email:</label>
@@ -40,6 +52,7 @@ const Register = () => {
           type="email"
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Enter your email..."
+          required
         />
 
         <label htmlFor="">Password:</label>
@@ -48,6 +61,7 @@ const Register = () => {
           type="password"
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Enter password..."
+          required
         />
 
         <button className="" type="submit">
@@ -61,7 +75,12 @@ const Register = () => {
           <Link to="/login">Login</Link>
         </button>
       </div>
-      {error ? <p>something went wrong</p> : ""}
+      {success && (
+        <p style={{ color: "green" }}>
+          Registration successful! Redirecting...
+        </p>
+      )}
+      {error && <p style={{ color: "red" }}>{error}</p>}
     </div>
   );
 };

@@ -1,7 +1,8 @@
 const router = require("express").Router();
+const authMiddleware = require("../middlewares/authMiddleware");
 const Category = require("../models/categoryModel");
 
-router.post("/", async (req, res) => {
+router.post("/", authMiddleware,async (req, res) => {
   try {
     const existingCategory = await Category.findOne({ name: req.body.name });
 

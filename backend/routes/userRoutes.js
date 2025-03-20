@@ -2,8 +2,9 @@ const router = require("express").Router();
 const bcrypt = require("bcrypt");
 const User = require("../models/userModel");
 const Post = require("../models/postModel");
+const authMiddleware = require("../middlewares/authMiddleware");
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", authMiddleware, async (req, res) => {
   if (req.body.userId === req.params.id) {
     try {
       if (req.body.password) {
@@ -26,7 +27,7 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", authMiddleware, async (req, res) => {
   if (req.body.userId === req.params.id) {
     try {
       const user = await User.findById(req.params.id);
