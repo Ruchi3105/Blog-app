@@ -23,10 +23,10 @@ const Home = () => {
     <>
     
       <Header />
-      <div>
+      {/* <div>
         <Posts posts={posts} />
         <Sidebar />
-      </div>
+      </div> */}
     </>
   );
 };
