@@ -20,6 +20,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       require: true,
       trim: true,
+      minlength: 6,
       set: (value) => value.replace(/\s+/g, " ").trim(),
     },
     profilePic: {

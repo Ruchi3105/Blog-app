@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../../context/Context";
 import axios from "axios";
+import { Trash2, UserRoundPen, Upload } from "lucide-react";
 
 const Settings = () => {
   const { user, dispatch } = useContext(Context);
@@ -8,9 +9,10 @@ const Settings = () => {
   const [username, setUsername] = useState(user.username || "");
   const [email, setEmail] = useState(user.email || "");
   const [password, setPassword] = useState("");
-  const [success, setSuccess] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   const pf = "http://localhost:5000/images/";
+  const pic = pf + "defaultProfile.jpg";
 
   useEffect(() => {
     setUsername(user.username);
@@ -24,9 +26,8 @@ const Settings = () => {
       userId: user._id,
       username,
       email,
-      password,
     };
-    if (password) updatedUser.password = password;
+    if (password.length > 0) updatedUser.password = password;
     if (file) {
       const data = new FormData();
       const filename = Date.now() + file.name;
@@ -34,7 +35,10 @@ const Settings = () => {
       data.append("file", file);
       updatedUser.profilePic = filename;
       try {
-        await axios.post("/api/upload", data,{withCredentials:true});
+        await axios.post("/api/upload", data, {
+          headers: { "Content-Type": "multipart/form-data" },
+          withCredentials: true,
+        });
       } catch (err) {
         console.log(err);
       }
@@ -43,56 +47,123 @@ const Settings = () => {
       const res = await axios.put("/api/users/" + user._id, updatedUser, {
         withCredentials: true,
       });
-      setSuccess(true);
       dispatch({ type: "UPDATE_SUCCESS", payload: res.data });
     } catch (err) {
       dispatch({ type: "UPDATE_FAILURE" });
     }
   };
 
+  const handleEdit = () => {
+    setIsEditing(!isEditing);
+  };
+
+  const handleDeleteAccount = async () => {
+    try {
+      await axios.delete(`/api/users/${user._id}`, { withCredentials: true });
+      alert(
+        "Your account and all posts has been deleted. Sorry to see you go :("
+      );
+      dispatch({ type: "LOGOUT" });
+      window.location.replace("/");
+    } catch (err) {
+      console.log("Error deleting account: ", err);
+    }
+  };
+
   return (
-    <div>
-      <div>
-        <div>
-          <span>Update your account</span>
-          <span>Delete</span>
-        </div>
-        <form action="" onSubmit={handleSubmit}>
-          <label htmlFor="">Profile picture</label>
-          <div>
+    <div className="bg-[url('https://wallpapercave.com/wp/wp8063327.jpg')] min-h-screen bg-cover bg-center bg-no-repeat bg-fixed w-screen">
+      <div className="flex flex-col justify-center items-center h-screen w-screen">
+        <h1 className="text-2xl mb-4 font-bold">Your Profile</h1>
+
+        <form
+          action=""
+          onSubmit={handleSubmit}
+          className="flex flex-col justify-center items-center gap-5"
+        >
+          <div className="flex flex-col justify-center items-center gap-2">
             <img
-              src={file ? URL.createObjectURL(file) : pf + user.profilePic}
+              className="h-20 w-20 rounded-2xl mb-3"
+              src={
+                file
+                  ? URL.createObjectURL(file)
+                  : user.profilePic
+                  ? pf + user.profilePic
+                  : pic
+              }
               alt=""
             />
-            <label htmlFor="fileInput">
-              <button>upload</button>
+            <label htmlFor="fileInput" className="cursor-pointer ">
+              <Upload className="bg-black/30 h-7 w-7 p-1 rounded-sm hover:bg-slate-300" />
             </label>
-            <input type="file" onChange={(e) => setFile(e.target.files[0])} />
+            <input
+              type="file"
+              id="fileInput"
+              onChange={(e) => setFile(e.target.files[0])}
+              className="hidden"
+              disabled={!isEditing}
+            />
           </div>
 
-          <label htmlFor="">Username</label>
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
+          <div className="flex gap-4 justify-center items-center w-full">
+            <label htmlFor="" className="font-semibold">
+              Username:
+            </label>
+            <input
+              className="outline-0 border-b-1 px-2  placeholder:text-sm text-gray-600"
+              type="text"
+              onChange={(e) => setUsername(e.target.value)}
+              value={username}
+              required
+              disabled={!isEditing}
+            />
+          </div>
 
-          <label htmlFor="">Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+          <div className="flex gap-4 justify-center items-center ">
+            <label htmlFor="" className="font-semibold">
+              E-mail:
+            </label>
+            <input
+              className="outline-0 border-b-1 px-2  placeholder:text-sm text-gray-600"
+              type="email"
+              onChange={(e) => setEmail(e.target.value)}
+              value={email}
+              required
+              disabled={!isEditing}
+            />
+          </div>
 
-          <label htmlFor="">Password</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <div className="flex gap-4 justify-center items-center">
+            <label htmlFor="" className="font-semibold">
+              Password:
+            </label>
+            <input
+              className="outline-0 border-b-1 px-2  placeholder:text-sm text-gray-600"
+              type="password"
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+              disabled={!isEditing}
+            />
+          </div>
 
-          <button type="submit">Update</button>
-          {success && <span>Profile has been updated...</span>}
+          <div className="flex p-4 gap-15">
+            <UserRoundPen
+              className="bg-black/30 h-10 w-10 p-2 rounded-lg transition-all duration-300 hover:rounded-full cursor-pointer text-green-700"
+              onClick={handleEdit}
+            />
+            <Trash2
+              className="bg-black/30 h-10 w-10 p-2 rounded-lg transition-all duration-300 hover:rounded-full cursor-pointer text-red-700"
+              onClick={handleDeleteAccount}
+            />
+          </div>
+
+          {isEditing && (
+            <button
+              type="submit"
+              className="bg-slate-800 text-white px-3 py-1 rounded-md hover:bg-slate-900 transition-all duration-300"
+            >
+              Update
+            </button>
+          )}
         </form>
       </div>
     </div>

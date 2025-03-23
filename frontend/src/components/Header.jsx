@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   return (
@@ -10,11 +11,16 @@ const Header = () => {
               Every Thought is a Story, Every Story is Worth Sharing.
             </h3>
           </div>
-          <p className="text-white">Start Your Blogging Journey Today!</p>
-          <div></div>
-          <button className="h-8 w-28 text-sm px-4 py-3 font-mono rounded-md bg-transparent border-2 border-white text-white transition-all duration-300 hover:scale-103">
+          <p className="text-white text-center">
+            Start Your Blogging Journey Today!
+          </p>
+
+          <Link
+            className="px-2 py-1 text-sm font-mono mt-4 rounded-md bg-transparent border-2 border-white text-white transition-all duration-300 hover:scale-103"
+            to={"/blogs"}
+          >
             Explore Blogs
-          </button>
+          </Link>
         </div>
       </div>
     </div>
