@@ -22,7 +22,7 @@ export default function TopBar() {
   const handleLogout = async () => {
     try {
       await axios.post(
-        "/api/auth/logout",
+        `${import.meta.env.VITE_BASE_URL}/api/auth/logout`,
         {},
         {
           withCredentials: true,
