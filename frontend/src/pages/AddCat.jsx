@@ -35,7 +35,7 @@ const AddCat = () => {
 
     try {
       const res = await axios.post(
-        "/api/categories",
+        `${import.meta.env.VITE_BASE_URL}/api/categories`,
         { name: trimmedCategory },
         { withCredentials: true }
       );
