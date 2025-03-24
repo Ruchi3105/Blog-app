@@ -8,8 +8,14 @@ router.put("/:id", authMiddleware, async (req, res) => {
   if (req.body.userId === req.params.id) {
     try {
       if (req.body.password) {
+        const password = req.body.password;
+        if (password.length < 6) {
+          return res
+            .status(400)
+            .json({ message: "Password must be at least 6 characters long" });
+        }
         const salt = await bcrypt.genSalt(10);
-        req.body.password = await bcrypt.hash(req.body.password, salt);
+        req.body.password = await bcrypt.hash(password, salt);
       }
       const updatedUser = await User.findByIdAndUpdate(
         req.params.id,

@@ -10,6 +10,8 @@ const Settings = () => {
   const [email, setEmail] = useState(user.email || "");
   const [password, setPassword] = useState("");
   const [isEditing, setIsEditing] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const pf = "http://localhost:5000/images/";
   const pic = pf + "defaultProfile.jpg";
@@ -19,8 +21,37 @@ const Settings = () => {
     setEmail(user.email);
   }, [user]);
 
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+
+    if (selectedFile) {
+      // Validate file type
+      const validTypes = ["image/png", "image/jpeg", "image/jpg"];
+      if (!validTypes.includes(selectedFile.type)) {
+        setError("Only JPG, JPEG, or PNG files are allowed.");
+        return;
+      }
+
+      // Validate file size (max 5MB)
+      if (selectedFile.size > 5 * 1024 * 1024) {
+        setError("File size must be less than 5MB.");
+        return;
+      }
+
+      setFile(selectedFile);
+      setError(""); // Clear previous errors
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+    setSuccess("");
+
+    if (!username.trim() || !email.trim()) {
+      setError("Username and Email cannot be empty.");
+      return;
+    }
     dispatch({ type: "UPDATE_START" });
     const updatedUser = {
       userId: user._id,
@@ -40,7 +71,8 @@ const Settings = () => {
           withCredentials: true,
         });
       } catch (err) {
-        console.log(err);
+        setError("Error uploading profile picture.");
+        return;
       }
     }
     try {
@@ -48,7 +80,10 @@ const Settings = () => {
         withCredentials: true,
       });
       dispatch({ type: "UPDATE_SUCCESS", payload: res.data });
+      setSuccess("Profile updated successfully!");
+      setIsEditing(false);
     } catch (err) {
+      setError("Failed to update profile. Try again.");
       dispatch({ type: "UPDATE_FAILURE" });
     }
   };
@@ -74,7 +109,8 @@ const Settings = () => {
     <div className="bg-[url('https://wallpapercave.com/wp/wp8063327.jpg')] min-h-screen bg-cover bg-center bg-no-repeat bg-fixed w-screen">
       <div className="flex flex-col justify-center items-center h-screen w-screen">
         <h1 className="text-2xl mb-4 font-bold">Your Profile</h1>
-
+        {error && <p className="text-red-500 text-sm">{error}</p>}
+        {success && <p className="text-green-500 text-sm">{success}</p>}
         <form
           action=""
           onSubmit={handleSubmit}
@@ -161,7 +197,7 @@ const Settings = () => {
               type="submit"
               className="bg-slate-800 text-white px-3 py-1 rounded-md hover:bg-slate-900 transition-all duration-300"
             >
-              Update
+              {success ? "Updated" : "Update"}
             </button>
           )}
         </form>

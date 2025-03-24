@@ -10,10 +10,28 @@ const Register = () => {
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
 
+  const validateInput = () => {
+    if (username.trim().length < 3) {
+      return "Username must be at least 3 characters long.";
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      return "Please enter a valid email address.";
+    }
+    if (password.length < 6) {
+      return "Password must be at least 6 characters long.";
+    }
+    return null;
+  };
+
   const handleRegister = async (e) => {
     e.preventDefault();
-    setError(false);
+    setError(null);
     setSuccess(false);
+
+    const validationError = validateInput();
+    if (validationError) {
+      return setError(validationError);
+    }
 
     try {
       const res = await axios.post(
@@ -38,6 +56,12 @@ const Register = () => {
       <div className="bg-black/60 h-screen w-screen flex justify-center items-center">
         <div className="flex flex-col justify-center items-center bg-white/70 px-4 py-7 sm:w-[55%] w-[90%] md:w-[45%] lg:w-[35%] gap-5 rounded-lg">
           <h1 className="text-2xl mb-2 mt-2">Create Account</h1>
+          {error && <p className="text-red-500 text-sm">{error}</p>}
+          {success && (
+            <p className="text-green-500 text-sm">
+              Registration successful! Redirecting...
+            </p>
+          )}
           <form
             onSubmit={handleRegister}
             className="flex flex-col justify-center items-center gap-5 w-full "
@@ -84,17 +108,11 @@ const Register = () => {
           </form>
           <div className="text-sm">
             <span>Already have an account? </span>
-            <button className="text-blue-800 underline">
-              {" "}
-              <Link to="/login">Login</Link>
-            </button>
+            
+              <Link to="/login" className="text-blue-800 underline">Login</Link>
+            
           </div>
-          {success && (
-            <p className="text-green-500 text-sm">
-              Registration successful! Redirecting...
-            </p>
-          )}
-          {error && <p className="text-red-500 text-sm">{error}</p>}
+          
         </div>
       </div>
     </div>

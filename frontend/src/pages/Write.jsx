@@ -11,6 +11,7 @@ const Write = () => {
   const [file, setFile] = useState(null);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,6 +28,18 @@ const Write = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // Trim and validate input fields
+    if (title.trim().length < 5) {
+      return setError("Title must be at least 5 characters long.");
+    }
+    if (desc.trim().length < 20) {
+      return setError("Description must be at least 20 characters long.");
+    }
+    if (!selectedCategory) {
+      return setError("Please select a category.");
+    }
+
+    setError("");
     const newPost = {
       username: user.username,
       title,
@@ -48,7 +61,10 @@ const Write = () => {
     try {
       const res = await axios.post("/api/posts/create", newPost);
       navigate("/post/" + res.data._id);
-    } catch (err) {}
+    } catch (err) {
+      setError(err.response?.data?.message || "Something went wrong");
+      console.log(err);
+    }
   };
 
   return (
@@ -65,6 +81,8 @@ const Write = () => {
             className="w-full max-h-80 object-cover rounded-lg"
           />
         )}
+
+        {error && <div className="text-red-500 font-semibold">{error}</div>}
 
         {/* FORM */}
         <form onSubmit={handleSubmit} className="w-full flex flex-col gap-6">
