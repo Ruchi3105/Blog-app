@@ -28,7 +28,7 @@ const Login = () => {
     dispatch({ type: "LOGIN_START" });
     try {
       await axios.post(
-        "/api/auth/login",
+        `${import.meta.env.VITE_BASE_URL}/api/auth/login`,
         {
           username: username.trim(),
           password: password,
@@ -36,7 +36,7 @@ const Login = () => {
         { withCredentials: true }
       );
 
-      const res = await axios.get("/api/auth/me", {
+      const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/auth/me`, {
         withCredentials: true,
       });
 
