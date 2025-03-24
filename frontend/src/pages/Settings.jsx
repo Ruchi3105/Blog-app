@@ -13,7 +13,7 @@ const Settings = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const pf = "http://localhost:5000/images/";
+  const pf = "https://blog-app-api-tau.vercel.app/images/";
   const pic = pf + "defaultProfile.jpg";
 
   useEffect(() => {
