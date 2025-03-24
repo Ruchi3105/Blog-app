@@ -8,7 +8,7 @@ const path = require("path");
 
 const app = express();
 
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+app.use(cors({ origin: "https://blog-app-frontend-tau-nine.vercel.app", credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 
