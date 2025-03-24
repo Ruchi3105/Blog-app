@@ -8,7 +8,7 @@ const path = require("path");
 
 const app = express();
 
-app.use(cors({ origin: "https://blog-app-frontend-kz34fxasj-ruchis-projects-5f7e0e46.vercel.app/", credentials: true }));
+app.use(cors({ origin: "https://blog-app-frontend-kz34fxasj-ruchis-projects-5f7e0e46.vercel.app", credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 
