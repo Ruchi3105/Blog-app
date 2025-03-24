@@ -66,7 +66,7 @@ const Settings = () => {
       data.append("file", file);
       updatedUser.profilePic = filename;
       try {
-        await axios.post("/api/upload", data, {
+        await axios.post(`${import.meta.env.VITE_BASE_URL}/api/upload`, data, {
           headers: { "Content-Type": "multipart/form-data" },
           withCredentials: true,
         });
@@ -76,7 +76,7 @@ const Settings = () => {
       }
     }
     try {
-      const res = await axios.put("/api/users/" + user._id, updatedUser, {
+      const res = await axios.put(`${import.meta.env.VITE_BASE_URL}/api/users/${user._id}`, updatedUser, {
         withCredentials: true,
       });
       dispatch({ type: "UPDATE_SUCCESS", payload: res.data });
@@ -94,7 +94,7 @@ const Settings = () => {
 
   const handleDeleteAccount = async () => {
     try {
-      await axios.delete(`/api/users/${user._id}`, { withCredentials: true });
+      await axios.delete(`${import.meta.env.VITE_BASE_URL}/api/users/${user._id}`, { withCredentials: true });
       alert(
         "Your account and all posts has been deleted. Sorry to see you go :("
       );
