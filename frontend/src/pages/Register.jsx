@@ -35,7 +35,7 @@ const Register = () => {
 
     try {
       const res = await axios.post(
-        "/api/auth/register",
+        `${import.meta.env.VITE_BASE_URL}/api/auth/register`,
         {
           username,
           email,
