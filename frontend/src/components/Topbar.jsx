@@ -9,7 +9,7 @@ export default function TopBar() {
   const { user, dispatch } = useContext(Context);
   const [profilePic, setProfilePic] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
-  const PF = "http://localhost:5000/images/";
+  const PF = "https://blog-app-api-tau.vercel.app/images/";
 
   useEffect(() => {
     if (user?.profilePic) {
