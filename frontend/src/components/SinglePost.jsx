@@ -23,7 +23,7 @@ const SinglePost = () => {
     const fetchPost = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(`/api/posts/${path}`);
+        const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/posts/${path}`);
         setPost(res.data);
         setTitle(res.data.title);
         setDesc(res.data.desc);
@@ -39,7 +39,7 @@ const SinglePost = () => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`/api/posts/${post._id}`, {
+      await axios.delete(`${import.meta.env.VITE_BASE_URL}/api/posts/${post._id}`, {
         data: { username: user.username },
         withCredentials: true,
       });
@@ -59,7 +59,7 @@ const SinglePost = () => {
     setUpdating(true);
     try {
       await axios.put(
-        `/api/posts/${post._id}`,
+        `${import.meta.env.VITE_BASE_URL}/api/posts/${post._id}`,
         {
           username: user.username,
           title: title.trim(),
