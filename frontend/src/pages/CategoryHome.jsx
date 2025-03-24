@@ -10,7 +10,7 @@ const CategoryHome = () => {
 
   useEffect(() => {
     const fetchCategory = async () => {
-      const res = await axios.get("/api/categories");
+      const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/categories`);
       setCategories(res.data);
     };
     fetchCategory();
