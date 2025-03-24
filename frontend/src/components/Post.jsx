@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const Post = ({ post }) => {
-  const pf = "http://localhost:5000/images/";
+  const pf = "https://blog-app-api-tau.vercel.app/images/";
   return (
     <div className="cursor-pointer group relative flex flex-col bg-white shadow-sm border border-slate-200 rounded-lg w-80 hover:shadow-lg transition-shadow duration-300">
       <div className="relative h-56 m-2.5 overflow-hidden text-white rounded-md">
