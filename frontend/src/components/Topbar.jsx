@@ -49,31 +49,11 @@ export default function TopBar() {
   return (
     <div className="w-screen bg-black/40 backdrop-blur-xl h-14 fixed top-0 flex items-center justify-center shadow-lg z-40">
       <div className="z-50 top-0 w-[80%] flex gap-7 justify-between text-blue-100 text-sm items-center">
-        <Link className="flex gap-3 justify-center cursor-pointer" to="/">
+        <Link className="flex gap-0.5 justify-center items-center cursor-pointer" to="/">
           <span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2" // ✅ Corrected
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="lucide lucide-slack" // ✅ Use "className" instead of "class"
-            >
-              <rect width="3" height="8" x="13" y="2" rx="1.5" />
-              <path d="M19 8.5V10h1.5A1.5 1.5 0 1 0 19 8.5" />
-              <rect width="3" height="8" x="8" y="14" rx="1.5" />
-              <path d="M5 15.5V14H3.5A1.5 1.5 0 1 0 5 15.5" />
-              <rect width="8" height="3" x="14" y="13" rx="1.5" />
-              <path d="M15.5 19H14v1.5a1.5 1.5 0 1 0 1.5-1.5" />
-              <rect width="8" height="3" x="2" y="8" rx="1.5" />
-              <path d="M8.5 5H10V3.5A1.5 1.5 0 1 0 8.5 5" />
-            </svg>
+          <img className="h-10" src="/icons8-n-64.png" alt="" />
           </span>
-          <span className="text-xl font-bold text-white">NeuraBlog</span>
+          <span className="text-xl font-bold text-blue-100">euraBlog</span>
         </Link>
         <div className="hidden md:flex gap-5 text-blue-100 text-sm items-center">
           <ul className="flex gap-5">

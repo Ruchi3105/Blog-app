@@ -109,8 +109,8 @@ const Settings = () => {
     <div className="bg-[url('https://wallpapercave.com/wp/wp8063327.jpg')] min-h-screen bg-cover bg-center bg-no-repeat bg-fixed w-screen">
       <div className="flex flex-col justify-center items-center h-screen w-screen">
         <h1 className="text-2xl mb-4 font-bold">Your Profile</h1>
-        {error && <p className="text-red-500 text-sm">{error}</p>}
-        {success && <p className="text-green-500 text-sm">{success}</p>}
+        {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
+        {success && <p className="text-green-500 text-sm mb-3">{success}</p>}
         <form
           action=""
           onSubmit={handleSubmit}

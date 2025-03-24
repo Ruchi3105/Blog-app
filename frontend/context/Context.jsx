@@ -15,7 +15,10 @@ const ContextProvider = ({ children }) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await fetch("/api/auth/me", { credentials: "include" });
+        const res = await fetch("/api/auth/me", {
+          method: "GET",
+          credentials: "include",
+        });
         const data = await res.json();
         if (data.user) {
           dispatch({ type: "LOGIN_SUCCESS", payload: data.user });

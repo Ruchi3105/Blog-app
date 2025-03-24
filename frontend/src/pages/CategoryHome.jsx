@@ -34,7 +34,7 @@ const CategoryHome = () => {
           className="fixed bottom-10 right-6 bg-blue-600 text-white p-4 rounded-full shadow-lg cursor-pointer hover:bg-blue-700 transition"
           to="/add-category"
         >
-          <Plus size={24} />
+          <Plus size={30} />
         </Link>
       </div>
     </div>
