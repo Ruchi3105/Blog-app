@@ -15,7 +15,7 @@ const Home = () => {
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const res = await axios.get("/api/posts" + search);
+      const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/posts` + search);
       setPosts(res.data);
       setFilteredPosts(res.data);
     };
