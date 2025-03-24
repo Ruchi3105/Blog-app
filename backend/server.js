@@ -8,7 +8,16 @@ const path = require("path");
 
 const app = express();
 
-app.use(cors({ origin: "https://blog-app-frontend-tau-nine.vercel.app", credentials: true }));
+const corsOptions = {
+  origin: "https://blog-app-frontend-tau-nine.vercel.app",
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Allow all required methods
+  allowedHeaders: ["Content-Type", "Authorization"], // Allow necessary headers
+};
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions)); // Handle preflight requests globally
+
 app.use(express.json());
 app.use(cookieParser());
 
