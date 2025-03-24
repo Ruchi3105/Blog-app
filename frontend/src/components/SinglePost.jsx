@@ -121,7 +121,7 @@ const SinglePost = () => {
               )}
 
               {post.username === user?.username && (
-                <div className="flex gap-3">
+                <div className="flex gap-3 m-2 sm:flex-row flex-col">
                   <SquarePen
                     className="text-blue-600 cursor-pointer hover:scale-110 transition-all"
                     size={24}

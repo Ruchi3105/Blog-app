@@ -16,8 +16,8 @@ const CategoryHome = () => {
     fetchCategory();
   }, []);
   return (
-    <div className="bg-gray-300 w-screen">
-      <div className="h-screen w-screen relative top-24 bg-gray-300">
+    <div className="bg-blue-200 w-screen">
+      <div className="h-screen w-screen relative top-24 bg-blue-200">
         {categories.length > 0 ? (
           <div className="flex justify-center items-center">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

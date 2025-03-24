@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+const MIN_CATEGORY_LENGTH = 3;
+const MAX_CATEGORY_LENGTH = 30;
+
 const AddCat = () => {
   const [category, setCategory] = useState("");
   const [error, setError] = useState(null);
@@ -15,6 +18,16 @@ const AddCat = () => {
     const trimmedCategory = category.trim();
     if (!trimmedCategory) {
       setError("Category name cannot be empty!");
+      return;
+    }
+
+    if (trimmedCategory.length < MIN_CATEGORY_LENGTH) {
+      setError(`Category name must be at least ${MIN_CATEGORY_LENGTH} characters long.`);
+      return;
+    }
+    
+    if (trimmedCategory.length > MAX_CATEGORY_LENGTH) {
+      setError(`Category name cannot exceed ${MAX_CATEGORY_LENGTH} characters.`);
       return;
     }
 

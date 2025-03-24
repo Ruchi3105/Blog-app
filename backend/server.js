@@ -16,7 +16,7 @@ connectDB();
 
 const port = process.env.PORT || 3000;
 
-app.use("/images", express.static(path.join(__dirname, "/images")));
+app.use("/images", express.static(path.join(__dirname, "images")));
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
