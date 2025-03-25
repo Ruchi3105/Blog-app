@@ -2,22 +2,20 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const Post = ({ post }) => {
-  const pf = "http://localhost:5000/images/";
+  // Use Cloudinary URL if available; otherwise, fallback to a default placeholder
+  const imageUrl = post.photo.startsWith("http")
+    ? post.photo
+    : "https://via.placeholder.com/300"; // Fallback image if no photo available
+
   return (
     <div className="cursor-pointer group relative flex flex-col bg-white shadow-sm border border-slate-200 rounded-lg w-80 hover:shadow-lg transition-shadow duration-300">
       <div className="relative h-56 m-2.5 overflow-hidden text-white rounded-md">
         <img
-          className="transition-transform duration-500 ease-[cubic-bezier(0.25, 1, 0.5, 1)] transform group-hover:scale-110"
-          src={pf + post.photo}
-          alt=""
+          className="transition-transform duration-500 ease-[cubic-bezier(0.25, 1, 0.5, 1)] transform group-hover:scale-110 object-cover w-full h-full"
+          src={imageUrl}
+          alt="Post"
         />
       </div>
-
-      {/* <div>
-        {post.categories.map((c, i) => (
-          <span key={i}>{c.name}</span>
-        ))}
-      </div> */}
 
       <div className="px-4 py-3">
         <h6 className="mb-2 text-slate-800 text-xl font-semibold">
@@ -29,9 +27,11 @@ const Post = ({ post }) => {
             : post.desc}
         </p>
       </div>
+
       <div className="px-4 text-sm text-slate-400 self-end">
         <span>{new Date(post.createdAt).toDateString()}</span>
       </div>
+
       <div className="px-4 pb-6 pt-0 mt-2">
         <Link
           to={`/post/${post._id}`}

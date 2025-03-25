@@ -17,13 +17,14 @@ const SinglePost = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [updating, setUpdating] = useState(false);
-  const pf = "http://localhost:5000/images/";
 
   useEffect(() => {
     const fetchPost = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/posts/${path}`);
+        const res = await axios.get(
+          `${import.meta.env.VITE_BASE_URL}/api/posts/${path}`
+        );
         setPost(res.data);
         setTitle(res.data.title);
         setDesc(res.data.desc);
@@ -39,10 +40,13 @@ const SinglePost = () => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`${import.meta.env.VITE_BASE_URL}/api/posts/${post._id}`, {
-        data: { username: user.username },
-        withCredentials: true,
-      });
+      await axios.delete(
+        `${import.meta.env.VITE_BASE_URL}/api/posts/${post._id}`,
+        {
+          data: { username: user.username },
+          withCredentials: true,
+        }
+      );
       navigate("/");
     } catch (err) {
       console.error("Error deleting post:", err);
@@ -89,7 +93,7 @@ const SinglePost = () => {
             {/* Post Image */}
             {post.photo && (
               <img
-                src={pf + post.photo}
+                src={post.photo}
                 alt="Post"
                 className="w-full h-80 object-cover rounded-md mb-6"
               />

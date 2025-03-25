@@ -12,34 +12,48 @@ const Settings = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-
-  const pf = "http://localhost:5000/images/";
-  const pic = pf + "defaultProfile.jpg";
+  const [profilePic, setProfilePic] = useState(user?.profilePic || ""); // Store Cloudinary URL
 
   useEffect(() => {
     setUsername(user.username);
     setEmail(user.email);
+    setProfilePic(user.profilePic || "https://res.cloudinary.com/dhaxasdsk/image/upload/v1742928637/defaultProfile_s8ke0b.jpg"); // Update Cloudinary URL if available
   }, [user]);
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
 
     if (selectedFile) {
-      // Validate file type
       const validTypes = ["image/png", "image/jpeg", "image/jpg"];
       if (!validTypes.includes(selectedFile.type)) {
         setError("Only JPG, JPEG, or PNG files are allowed.");
         return;
       }
 
-      // Validate file size (max 5MB)
       if (selectedFile.size > 5 * 1024 * 1024) {
         setError("File size must be less than 5MB.");
         return;
       }
 
       setFile(selectedFile);
-      setError(""); // Clear previous errors
+      setError("");
+    }
+  };
+
+  const uploadToCloudinary = async (file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "blog-app-preset"); // Replace with your Cloudinary upload preset
+
+    try {
+      const res = await axios.post(
+        `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`,
+        formData
+      );
+      return res.data.secure_url; // Return the Cloudinary image URL
+    } catch (err) {
+      setError("Error uploading image to Cloudinary.");
+      return null;
     }
   };
 
@@ -52,36 +66,33 @@ const Settings = () => {
       setError("Username and Email cannot be empty.");
       return;
     }
+
     dispatch({ type: "UPDATE_START" });
-    const updatedUser = {
+
+    let updatedUser = {
       userId: user._id,
       username,
       email,
     };
+
     if (password.length > 0) updatedUser.password = password;
+
     if (file) {
-      const data = new FormData();
-      const filename = Date.now() + file.name;
-      data.append("name", filename);
-      data.append("file", file);
-      updatedUser.profilePic = filename;
-      try {
-        await axios.post(`${import.meta.env.VITE_BASE_URL}/api/upload`, data, {
-          headers: { "Content-Type": "multipart/form-data" },
-          withCredentials: true,
-        });
-      } catch (err) {
-        setError("Error uploading profile picture.");
-        return;
-      }
+      const imageUrl = await uploadToCloudinary(file);
+      if (!imageUrl) return;
+      updatedUser.profilePic = imageUrl; // Store Cloudinary URL in the database
     }
+
     try {
-      const res = await axios.put(`${import.meta.env.VITE_BASE_URL}/api/users/${user._id}`, updatedUser, {
-        withCredentials: true,
-      });
+      const res = await axios.put(
+        `${import.meta.env.VITE_BASE_URL}/api/users/${user._id}`,
+        updatedUser,
+        { withCredentials: true }
+      );
       dispatch({ type: "UPDATE_SUCCESS", payload: res.data });
       setSuccess("Profile updated successfully!");
       setIsEditing(false);
+      setProfilePic(res.data.profilePic); // Update state with Cloudinary URL
     } catch (err) {
       setError("Failed to update profile. Try again.");
       dispatch({ type: "UPDATE_FAILURE" });
@@ -94,10 +105,10 @@ const Settings = () => {
 
   const handleDeleteAccount = async () => {
     try {
-      await axios.delete(`${import.meta.env.VITE_BASE_URL}/api/users/${user._id}`, { withCredentials: true });
-      alert(
-        "Your account and all posts has been deleted. Sorry to see you go :("
-      );
+      await axios.delete(`${import.meta.env.VITE_BASE_URL}/api/users/${user._id}`, {
+        withCredentials: true,
+      });
+      alert("Your account and all posts have been deleted. Sorry to see you go :(");
       dispatch({ type: "LOGOUT" });
       window.location.replace("/");
     } catch (err) {
@@ -112,40 +123,31 @@ const Settings = () => {
         {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
         {success && <p className="text-green-500 text-sm mb-3">{success}</p>}
         <form
-          action=""
           onSubmit={handleSubmit}
           className="flex flex-col justify-center items-center gap-5"
         >
           <div className="flex flex-col justify-center items-center gap-2">
             <img
               className="h-20 w-20 rounded-2xl mb-3"
-              src={
-                file
-                  ? URL.createObjectURL(file)
-                  : user.profilePic
-                  ? pf + user.profilePic
-                  : pic
-              }
-              alt=""
+              src={file ? URL.createObjectURL(file) : profilePic}
+              alt="Profile"
             />
-            <label htmlFor="fileInput" className="cursor-pointer ">
+            <label htmlFor="fileInput" className="cursor-pointer">
               <Upload className="bg-black/30 h-7 w-7 p-1 rounded-sm hover:bg-slate-300" />
             </label>
             <input
               type="file"
               id="fileInput"
-              onChange={(e) => setFile(e.target.files[0])}
+              onChange={handleFileChange}
               className="hidden"
               disabled={!isEditing}
             />
           </div>
 
           <div className="flex gap-4 justify-center items-center w-full">
-            <label htmlFor="" className="font-semibold">
-              Username:
-            </label>
+            <label className="font-semibold">Username:</label>
             <input
-              className="outline-0 border-b-1 px-2  placeholder:text-sm text-gray-600"
+              className="outline-0 border-b-1 px-2 placeholder:text-sm text-gray-600"
               type="text"
               onChange={(e) => setUsername(e.target.value)}
               value={username}
@@ -154,12 +156,10 @@ const Settings = () => {
             />
           </div>
 
-          <div className="flex gap-4 justify-center items-center ">
-            <label htmlFor="" className="font-semibold">
-              E-mail:
-            </label>
+          <div className="flex gap-4 justify-center items-center">
+            <label className="font-semibold">E-mail:</label>
             <input
-              className="outline-0 border-b-1 px-2  placeholder:text-sm text-gray-600"
+              className="outline-0 border-b-1 px-2 placeholder:text-sm text-gray-600"
               type="email"
               onChange={(e) => setEmail(e.target.value)}
               value={email}
@@ -169,11 +169,9 @@ const Settings = () => {
           </div>
 
           <div className="flex gap-4 justify-center items-center">
-            <label htmlFor="" className="font-semibold">
-              Password:
-            </label>
+            <label className="font-semibold">Password:</label>
             <input
-              className="outline-0 border-b-1 px-2  placeholder:text-sm text-gray-600"
+              className="outline-0 border-b-1 px-2 placeholder:text-sm text-gray-600"
               type="password"
               onChange={(e) => setPassword(e.target.value)}
               value={password}

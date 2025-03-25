@@ -4,19 +4,11 @@ const connectDB = require("./config/dbConnection");
 const multer = require("multer");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const { v2: cloudinary } = require("cloudinary");
+const { CloudinaryStorage } = require("multer-storage-cloudinary")
 const path = require("path");
 
 const app = express();
-
-// const corsOptions = {
-//   origin: "https://blog-app-frontend-tau-nine.vercel.app",
-//   credentials: true,
-//   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Allow all required methods
-//   allowedHeaders: ["Content-Type", "Authorization"], // Allow necessary headers
-// };
-
-// app.use(cors(corsOptions));
-// app.options("*", cors(corsOptions)); // Handle preflight requests globally
 
 app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 
@@ -27,14 +19,19 @@ connectDB();
 
 const port = process.env.PORT || 3000;
 
-app.use("/images", express.static(path.join(__dirname, "images")));
+// Cloudinary Configuration
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_API_KEY,
+  api_secret: process.env.CLOUD_API_SECRET,
+});
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "images/");
-  },
-  filename: (req, file, cb) => {
-    cb(null, req.body.name);
+// Set up Cloudinary Storage
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "uploads", // Cloudinary folder where images will be stored
+    allowed_formats: ["jpg", "png", "jpeg"],
   },
 });
 
@@ -42,7 +39,7 @@ const upload = multer({ storage: storage });
 
 app.post("/api/upload", upload.single("file"), (req, res) => {
   try {
-    res.status(200).json({ message: "File has been uploaded successfully" });
+    res.status(200).json({ url: req.file.path });
   } catch (err) {
     res.status(500).json({ error: "File upload failed" });
   }
