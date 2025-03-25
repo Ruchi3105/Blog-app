@@ -8,15 +8,17 @@ const path = require("path");
 
 const app = express();
 
-const corsOptions = {
-  origin: "https://blog-app-frontend-tau-nine.vercel.app",
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Allow all required methods
-  allowedHeaders: ["Content-Type", "Authorization"], // Allow necessary headers
-};
+// const corsOptions = {
+//   origin: "https://blog-app-frontend-tau-nine.vercel.app",
+//   credentials: true,
+//   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Allow all required methods
+//   allowedHeaders: ["Content-Type", "Authorization"], // Allow necessary headers
+// };
 
-app.use(cors(corsOptions));
-app.options("*", cors(corsOptions)); // Handle preflight requests globally
+// app.use(cors(corsOptions));
+// app.options("*", cors(corsOptions)); // Handle preflight requests globally
+
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 
 app.use(express.json());
 app.use(cookieParser());
@@ -52,5 +54,5 @@ app.use("/api/posts", require("./routes/postRoutes"));
 app.use("/api/categories", require("./routes/categoryRoutes"));
 
 app.listen(port, () => {
-  console.log(`Server is running on the port: ${port}`);
+  console.log(`Server is running on the port: ${port}`);
 });

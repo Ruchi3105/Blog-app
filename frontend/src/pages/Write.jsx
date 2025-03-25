@@ -17,7 +17,9 @@ const Write = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/categories`);
+        const res = await axios.get(
+          `${import.meta.env.VITE_BASE_URL}/api/categories`
+        );
         setCategories(res.data);
       } catch (err) {
         console.log(err.message);
@@ -53,13 +55,19 @@ const Write = () => {
       data.append("file", file);
       newPost.photo = filename;
       try {
-        await axios.post(`${import.meta.env.VITE_BASE_URL}/api/upload`, data);
+        await axios.post(`${import.meta.env.VITE_BASE_URL}/api/upload`, data, {
+          withCredentials: true,
+        });
       } catch (err) {
         console.log(err);
       }
     }
     try {
-      const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/posts/create`, newPost);
+      const res = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/api/posts/create`,
+        newPost,
+        { withCredentials: true }
+      );
       navigate("/post/" + res.data._id);
     } catch (err) {
       setError(err.response?.data?.message || "Something went wrong");

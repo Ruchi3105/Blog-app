@@ -9,7 +9,7 @@ export default function TopBar() {
   const { user, dispatch } = useContext(Context);
   const [profilePic, setProfilePic] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
-  const PF = "https://blog-app-api-tau.vercel.app/images/";
+  const PF = "http://localhost:5000/images/";
 
   useEffect(() => {
     if (user?.profilePic) {
@@ -51,7 +51,7 @@ export default function TopBar() {
       <div className="z-50 top-0 w-[80%] flex gap-7 justify-between text-blue-100 text-sm items-center">
         <Link className="flex gap-0.5 justify-center items-center cursor-pointer" to="/">
           <span>
-          <img className="h-10" src="/icons8-n-64.png" alt="" />
+          <img className="h-7" src="/icons8-n-64.png" alt="" />
           </span>
           <span className="text-xl font-bold text-blue-100">euraBlog</span>
         </Link>
