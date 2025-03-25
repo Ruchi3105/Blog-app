@@ -10,10 +10,10 @@ const path = require("path");
 
 const app = express();
 
-app.use(cors({ origin: "https://blog-app-frontend-jhla.onrender.com", credentials: true }));
-
 app.use(express.json());
 app.use(cookieParser());
+
+app.use(cors({ origin: "https://blog-app-frontend-jhla.onrender.com", credentials: true }));
 
 connectDB();
 
