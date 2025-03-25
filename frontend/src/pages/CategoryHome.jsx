@@ -17,7 +17,7 @@ const CategoryHome = () => {
   }, []);
   return (
     <div className="bg-blue-200 w-screen min-h-screen">
-      <div className="min-h-screen w-screen relative top-24 bg-blue-200">
+      <div className="min-h-screen w-screen relative top-24 bg-blue-200 pb-5">
         {categories.length > 0 ? (
           <div className="flex justify-center items-center">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
