@@ -50,6 +50,12 @@ app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/posts", require("./routes/postRoutes"));
 app.use("/api/categories", require("./routes/categoryRoutes"));
 
+app.use(express.static(path.join(__dirname, "frontend", "build")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "frontend", "build", "index.html"));
+});
+
 app.listen(port, () => {
   console.log(`Server is running on the port: ${port}`);
 });
