@@ -17,7 +17,7 @@ const Settings = () => {
   useEffect(() => {
     setUsername(user.username);
     setEmail(user.email);
-    setProfilePic(user.profilePic || "https://res.cloudinary.com/dhaxasdsk/image/upload/v1742928637/defaultProfile_s8ke0b.jpg"); // Update Cloudinary URL if available
+    setProfilePic(user.profilePic || "https://res.cloudinary.com/dhaxasdsk/image/upload/v1743003229/defaultProfile_faeqba.jpg"); // Update Cloudinary URL if available
   }, [user]);
 
   const handleFileChange = (e) => {
