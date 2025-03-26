@@ -15,10 +15,10 @@ export default function TopBar() {
       setProfilePic(
         user.profilePic.startsWith("http")
           ? user.profilePic
-          : "https://res.cloudinary.com/dhaxasdsk/image/upload/v1742928637/defaultProfile_s8ke0b.jpg"
+          : "https://res.cloudinary.com/dhaxasdsk/image/upload/v1743003229/defaultProfile_faeqba.jpg"
       );
     } else {
-      setProfilePic("https://res.cloudinary.com/dhaxasdsk/image/upload/v1742928637/defaultProfile_s8ke0b.jpg");
+      setProfilePic("https://res.cloudinary.com/dhaxasdsk/image/upload/v1743003229/defaultProfile_faeqba.jpg");
     }
   }, [user]);
 
