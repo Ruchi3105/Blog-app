@@ -7,6 +7,7 @@ const authMiddleware = require("../middlewares/authMiddleware");
 router.put("/:id", authMiddleware, async (req, res) => {
   if (req.body.userId === req.params.id) {
     try {
+      const user=await User.findById(req.params.id);
       if (req.body.password) {
         const password = req.body.password;
         if (password.length < 6) {
@@ -22,6 +23,11 @@ router.put("/:id", authMiddleware, async (req, res) => {
         req.body,
         { new: true, runValidators: true }
       );
+
+      const updatedPosts = await Post.updateMany(
+        { username: user.username },
+        { username: req.body.username }
+      )
       res.status(200).json(updatedUser);
     } catch (err) {
       res.status(500).json({ error: err.message });

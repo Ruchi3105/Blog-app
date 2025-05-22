@@ -17,7 +17,10 @@ const Settings = () => {
   useEffect(() => {
     setUsername(user.username);
     setEmail(user.email);
-    setProfilePic(user.profilePic || "https://res.cloudinary.com/dhaxasdsk/image/upload/v1743003229/defaultProfile_faeqba.jpg"); // Update Cloudinary URL if available
+    setProfilePic(
+      user.profilePic ||
+        "https://res.cloudinary.com/dhaxasdsk/image/upload/v1743003229/defaultProfile_faeqba.jpg"
+    ); // Update Cloudinary URL if available
   }, [user]);
 
   const handleFileChange = (e) => {
@@ -47,7 +50,9 @@ const Settings = () => {
 
     try {
       const res = await axios.post(
-        `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`,
+        `https://api.cloudinary.com/v1_1/${
+          import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
+        }/image/upload`,
         formData
       );
       return res.data.secure_url; // Return the Cloudinary image URL
@@ -105,10 +110,15 @@ const Settings = () => {
 
   const handleDeleteAccount = async () => {
     try {
-      await axios.delete(`${import.meta.env.VITE_BASE_URL}/api/users/${user._id}`, {
-        withCredentials: true,
-      });
-      alert("Your account and all posts have been deleted. Sorry to see you go :(");
+      await axios.delete(
+        `${import.meta.env.VITE_BASE_URL}/api/users/${user._id}`,
+        {
+          withCredentials: true,
+        }
+      );
+      alert(
+        "Your account and all posts have been deleted. Sorry to see you go :("
+      );
       dispatch({ type: "LOGOUT" });
       window.location.replace("/");
     } catch (err) {
@@ -117,87 +127,104 @@ const Settings = () => {
   };
 
   return (
-    <div className="bg-[url('https://wallpapercave.com/wp/wp8063327.jpg')] min-h-screen bg-cover bg-center bg-no-repeat bg-fixed w-screen">
-      <div className="flex flex-col justify-center items-center h-screen w-screen">
-        <h1 className="text-2xl mb-4 font-bold">Your Profile</h1>
+    <div className="bg-[url('https://digitalsynopsis.com/wp-content/uploads/2017/02/beautiful-color-gradients-backgrounds-047-fly-high.png')] min-h-screen bg-cover bg-center bg-no-repeat bg-fixed w-screen flex justify-center items-center">
+      <div className="flex flex-col justify-center items-center bg-white rounded-2xl px-10 mx-2 py-10">
+        <h1 className="text-2xl mb-4 font-bold">Welcome, {username}</h1>
         {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
         {success && <p className="text-green-500 text-sm mb-3">{success}</p>}
         <form
+          action=""
           onSubmit={handleSubmit}
-          className="flex flex-col justify-center items-center gap-5"
+          className="flex sm:flex-col lg:flex-row flex-col justify-center items-center gap-8"
         >
-          <div className="flex flex-col justify-center items-center gap-2">
+          <div className="flex flex-col justify-center items-center gap-3">
             <img
-              className="h-20 w-20 rounded-2xl mb-3"
-              src={file ? URL.createObjectURL(file) : profilePic}
-              alt="Profile"
+              className="h-40 w-40 rounded-xl mb-3"
+              src={
+                file
+                  ? URL.createObjectURL(file)
+                  : profilePic
+              }
+              alt=""
             />
-            <label htmlFor="fileInput" className="cursor-pointer">
-              <Upload className="bg-black/30 h-7 w-7 p-1 rounded-sm hover:bg-slate-300" />
-            </label>
+            {isEditing && (
+              <label htmlFor="fileInput" className="cursor-pointer ">
+                <Upload className="bg-black/30 h-7 w-7 p-1 rounded-sm hover:bg-slate-300" />
+              </label>
+            )}
             <input
               type="file"
               id="fileInput"
-              onChange={handleFileChange}
+              onChange={(e) => setFile(e.target.files[0])}
               className="hidden"
               disabled={!isEditing}
             />
           </div>
 
-          <div className="flex gap-4 justify-center items-center w-full">
-            <label className="font-semibold">Username:</label>
-            <input
-              className="outline-0 border-b-1 px-2 placeholder:text-sm text-gray-600"
-              type="text"
-              onChange={(e) => setUsername(e.target.value)}
-              value={username}
-              required
-              disabled={!isEditing}
-            />
+          <div className="flex flex-col gap-6 justify-center items-center text-sm">
+            <div className="flex gap-4 justify-center items-center w-full">
+              <label htmlFor="" className="font-semibold">
+                Username:
+              </label>
+              <input
+                className="outline-0 border-b-1 px-2  placeholder:text-sm text-gray-600"
+                type="text"
+                onChange={(e) => setUsername(e.target.value)}
+                value={username}
+                required
+                disabled={!isEditing}
+              />
+            </div>
+
+            <div className="flex gap-4 justify-center items-center ">
+              <label htmlFor="" className="font-semibold">
+                E-mail:
+              </label>
+              <input
+                className="outline-0 border-b-1 px-2  placeholder:text-sm text-gray-600"
+                type="email"
+                onChange={(e) => setEmail(e.target.value)}
+                value={email}
+                required
+                disabled={!isEditing}
+              />
+            </div>
+
+            <div className="flex gap-4 justify-center items-center">
+              <label htmlFor="" className="font-semibold">
+                Password:
+              </label>
+              <input
+                className="outline-0 border-b-1 px-2  placeholder:text-sm text-gray-600"
+                type="password"
+                onChange={(e) => setPassword(e.target.value)}
+                value={password}
+                disabled={!isEditing}
+              />
+            </div>
           </div>
 
-          <div className="flex gap-4 justify-center items-center">
-            <label className="font-semibold">E-mail:</label>
-            <input
-              className="outline-0 border-b-1 px-2 placeholder:text-sm text-gray-600"
-              type="email"
-              onChange={(e) => setEmail(e.target.value)}
-              value={email}
-              required
-              disabled={!isEditing}
-            />
-          </div>
+          <div className="flex flex-col justify-center items-center gap-4">
+            <div className="flex p-4 gap-15">
+              <UserRoundPen
+                className="bg-black/30 h-8 w-8 p-2 rounded-lg transition-all duration-300 hover:rounded-full cursor-pointer text-green-700"
+                onClick={handleEdit}
+              />
+              <Trash2
+                className="bg-black/30 h-8 w-8 p-2 rounded-lg transition-all duration-300 hover:rounded-full cursor-pointer text-red-700"
+                onClick={handleDeleteAccount}
+              />
+            </div>
 
-          <div className="flex gap-4 justify-center items-center">
-            <label className="font-semibold">Password:</label>
-            <input
-              className="outline-0 border-b-1 px-2 placeholder:text-sm text-gray-600"
-              type="password"
-              onChange={(e) => setPassword(e.target.value)}
-              value={password}
-              disabled={!isEditing}
-            />
+            {isEditing && (
+              <button
+                type="submit"
+                className="bg-slate-800 text-white px-3 py-1 rounded-md hover:bg-slate-900 transition-all duration-300 text-sm"
+              >
+                {success ? "Updated" : "Update"}
+              </button>
+            )}
           </div>
-
-          <div className="flex p-4 gap-15">
-            <UserRoundPen
-              className="bg-black/30 h-10 w-10 p-2 rounded-lg transition-all duration-300 hover:rounded-full cursor-pointer text-green-700"
-              onClick={handleEdit}
-            />
-            <Trash2
-              className="bg-black/30 h-10 w-10 p-2 rounded-lg transition-all duration-300 hover:rounded-full cursor-pointer text-red-700"
-              onClick={handleDeleteAccount}
-            />
-          </div>
-
-          {isEditing && (
-            <button
-              type="submit"
-              className="bg-slate-800 text-white px-3 py-1 rounded-md hover:bg-slate-900 transition-all duration-300"
-            >
-              {success ? "Updated" : "Update"}
-            </button>
-          )}
         </form>
       </div>
     </div>
