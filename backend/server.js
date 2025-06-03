@@ -10,7 +10,7 @@ const path = require("path");
 
 const app = express();
 
-app.use(express.json());
+app.use(express.static(path.join(__dirname, 'src/frontend/build')));
 app.use(cookieParser());
 
 app.use(cors({ origin: process.env.CORS_ORIGIN, credentials: true }));
@@ -50,7 +50,7 @@ app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/posts", require("./routes/postRoutes"));
 app.use("/api/categories", require("./routes/categoryRoutes"));
 
-app.use(express.static(path.join(__dirname, "../frontend/build")));
+// app.use(express.static(path.join(__dirname, "../frontend/build")));
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/build", "index.html"));
