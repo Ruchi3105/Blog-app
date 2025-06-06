@@ -68,14 +68,14 @@ const AddCat = () => {
             placeholder="Enter category name"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700"
+            className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-700"
             disabled={loading}
           />
 
           <button
             type="submit"
-            className={`bg-blue-600 text-white px-4 py-2 rounded-md font-medium transition-all ${
-              !category.trim() || loading ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"
+            className={`bg-indigo-600 text-white px-4 py-2 rounded-md font-medium transition-all ${
+              !category.trim() || loading ? "opacity-50 cursor-not-allowed" : "hover:bg-indigo-700"
             }`}
             disabled={!category.trim() || loading}
           >

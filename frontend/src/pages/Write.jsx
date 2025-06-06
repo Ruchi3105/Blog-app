@@ -1,17 +1,23 @@
+// Write.jsx
 import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../../context/Context";
 import { useNavigate } from "react-router-dom";
-import { CirclePlus } from "lucide-react";
 import axios from "axios";
+import PexelsModal from "./PexelsModal";
 
 const Write = () => {
   const { user } = useContext(Context);
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
   const [file, setFile] = useState(null);
+  const [imageSource, setImageSource] = useState("local");
+  const [pexelsImage, setPexelsImage] = useState(null);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCategories, setSelectedCategories] = useState([]);
   const [error, setError] = useState("");
+  const [showPexelsModal, setShowPexelsModal] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,22 +32,25 @@ const Write = () => {
     fetchCategories();
   }, []);
 
+  const handleAddCategory = () => {
+    if (selectedCategory && !selectedCategories.includes(selectedCategory)) {
+      setSelectedCategories((prev) => [...prev, selectedCategory]);
+    }
+    setSelectedCategory("");
+  };
+
+  const handleRemoveCategory = (name) => {
+    setSelectedCategories((prev) => prev.filter((cat) => cat !== name));
+  };
+
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
-
     if (selectedFile) {
       const validTypes = ["image/png", "image/jpeg", "image/jpg"];
-      if (!validTypes.includes(selectedFile.type)) {
-        setError("Only JPG, JPEG, or PNG files are allowed.");
-        return;
-      }
-
-      if (selectedFile.size > 5 * 1024 * 1024) {
-        setError("File size must be less than 5MB.");
-        return;
-      }
-
+      if (!validTypes.includes(selectedFile.type)) return setError("Only JPG, JPEG, or PNG files allowed.");
+      if (selectedFile.size > 5 * 1024 * 1024) return setError("File must be <5MB");
       setFile(selectedFile);
+      setPexelsImage(null);
       setError("");
     }
   };
@@ -49,13 +58,9 @@ const Write = () => {
   const uploadToCloudinary = async (file) => {
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("upload_preset", "blog-app-preset"); // Replace with your Cloudinary upload preset
-
+    formData.append("upload_preset", "blog-app-preset");
     try {
-      const res = await axios.post(
-        `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`,
-        formData
-      );
+      const res = await axios.post(`https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`, formData);
       return res.data.secure_url;
     } catch (err) {
       console.error("Image upload failed:", err);
@@ -66,93 +71,157 @@ const Write = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (title.trim().length < 5) return setError("Title must be at least 5 characters long.");
-    if (desc.trim().length < 20) return setError("Description must be at least 20 characters long.");
-    if (!selectedCategory) return setError("Please select a category.");
-  
+    if (title.trim().length < 5) return setError("Title must be at least 5 characters.");
+    if (desc.trim().length < 20) return setError("Description must be at least 20 characters.");
+    if (selectedCategories.length === 0) return setError("Please select a category.");
+
     setError("");
     let imageUrl = "";
 
-    if (file) {
-      imageUrl = await uploadToCloudinary(file);
-      if (!imageUrl) return;
-    }
+    if (file) imageUrl = await uploadToCloudinary(file);
+    else if (pexelsImage) imageUrl = pexelsImage;
+    else return setError("Please select an image.");
 
     const newPost = {
       username: user.username,
       title,
       desc,
-      categories: [selectedCategory],
+      categories: selectedCategories,
       photo: imageUrl,
     };
 
     try {
-      const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/posts/create`, newPost, {
-        withCredentials: true,
-      });
+      const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/posts/create`, newPost, { withCredentials: true });
       navigate("/post/" + res.data._id);
     } catch (err) {
       setError(err.response?.data?.message || "Something went wrong.");
-      console.log("Post creation error:", err);
     }
   };
 
   return (
-    <div className="min-h-screen w-screen flex flex-col items-center bg-gray-200 top-14 relative overflow-x-hidden">
-      <div className="w-full max-w-screen-lg rounded-lg flex flex-col items-center space-y-6 px-6 py-7">
-        <h2 className="mb-4 text-2xl font-semibold">Create a New Post</h2>
+    <div className="min-h-screen w-screen flex flex-col items-center bg-gradient-to-br from-[#fdfbfb] to-[#ebedee] px-4 py-12 pt-25">
+      <div className="w-full max-w-4xl bg-white shadow-xl rounded-2xl p-8 space-y-6 border border-gray-200">
+        <h2 className="text-3xl font-bold text-gray-800 border-b pb-2">Create a New Blog Post</h2>
 
-        {file && <img src={URL.createObjectURL(file)} alt="Preview" className="w-full max-h-80 object-cover rounded-lg" />}
-        {error && <div className="text-red-500 font-semibold">{error}</div>}
+        {(imageSource === "pexels" && pexelsImage) || (imageSource === "local" && file) ? (
+          <img
+            src={imageSource === "local" ? URL.createObjectURL(file) : pexelsImage}
+            alt="Preview"
+            className="w-full max-h-96 object-cover rounded-xl shadow-md"
+          />
+        ) : null}
 
-        <form onSubmit={handleSubmit} className="w-full flex flex-col gap-6">
-          {/* File Upload Input */}
-          <div className="flex items-center gap-4">
-            <label htmlFor="fileInput" className="cursor-pointer text-blue-600 hover:text-slate-950 transition">
-              <CirclePlus size={32} />
-            </label>
-            <input type="file" id="fileInput" className="hidden" onChange={handleFileChange} />
-            <input
-              type="text"
-              placeholder="Enter title..."
-              className="flex-1 border-b-2 border-blue-600 focus:border-slate-950 outline-none p-2 text-lg w-full"
-              autoFocus
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
+        {error && <div className="text-red-600 font-medium bg-red-100 px-4 py-2 rounded-md">{error}</div>}
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <select
+              value={imageSource}
+              onChange={(e) => {
+                setImageSource(e.target.value);
+                setFile(null);
+                setPexelsImage(null);
+              }}
+              className="border p-2 rounded-md w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            >
+              <option value="local">Upload from Device</option>
+              <option value="pexels">Choose from Pexels</option>
+            </select>
+
+            {imageSource === "local" ? (
+              <input
+                type="file"
+                onChange={handleFileChange}
+                className="border p-2 rounded-md w-full sm:w-auto"
+              />
+            ) : (
+              <button
+                type="button"
+                onClick={() => setShowPexelsModal(true)}
+                className="bg-slate-900 text-white px-2 py-1 rounded-md hover:bg-slate-950 transition text-sm"
+              >
+                Open Pexels Gallery
+              </button>
+            )}
           </div>
 
-          {/* Category Selection */}
-          <select
-            className="border border-gray-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700"
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-          >
-            <option value="" disabled>
-              Select a category
-            </option>
-            {categories.map((cat) => (
-              <option key={cat._id} value={cat.name}>
-                {cat.name}
-              </option>
-            ))}
-          </select>
+          <input
+            type="text"
+            placeholder="Enter a captivating title..."
+            className="w-full text-xl font-medium border-b-2 border-gray-300 p-2 outline-none focus:border-indigo-500"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            autoFocus
+          />
 
-          {/* Story Input */}
+          <div className="flex flex-col sm:flex-row gap-4 items-center">
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="border p-2 rounded-md w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-green-400"
+            >
+              <option value="" disabled>
+                Select a category
+              </option>
+              {categories.map((cat) => (
+                <option key={cat._id} value={cat.name}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
+            <button
+              type="button"
+              onClick={handleAddCategory}
+              className="bg-green-600 text-white text-sm px-2 py-1 rounded-md hover:bg-green-700 transition"
+            >
+              Add Category
+            </button>
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            {selectedCategories.map((cat) => (
+              <div
+                key={cat}
+                className="bg-blue-100 text-indigo-800 px-3 py-1 rounded-full flex items-center gap-2 text-sm shadow"
+              >
+                {cat}
+                <button
+                  type="button"
+                  onClick={() => handleRemoveCategory(cat)}
+                  className="text-red-500 hover:text-red-700 font-bold"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
+
           <textarea
-            placeholder="Tell your story..."
-            className="w-full min-h-[300px] p-3 border border-blue-600 focus:ring-2 focus:ring-slate-950 outline-none resize-none rounded-lg"
+            placeholder="Start writing your story..."
+            className="w-full min-h-[300px] p-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400 text-gray-700 text-lg leading-7"
             value={desc}
             onChange={(e) => setDesc(e.target.value)}
           ></textarea>
 
-          {/* Publish Button */}
-          <button type="submit" className="w-20 bg-blue-500 text-white rounded-lg py-1 px-3 hover:bg-blue-700 transition-all self-end">
-            Publish
+          <button
+            type="submit"
+            className="bg-indigo-600 text-white px-5 py-1 rounded-lg hover:bg-indigo-700 transition text-md w-fit ml-auto"
+          >
+            Publish Post
           </button>
         </form>
       </div>
+
+      {showPexelsModal && (
+        <PexelsModal
+          query={title || selectedCategory}
+          onClose={() => setShowPexelsModal(false)}
+          onSelectImage={(url) => {
+            setPexelsImage(url);
+            setShowPexelsModal(false);
+          }}
+        />
+      )}
     </div>
   );
 };

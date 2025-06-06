@@ -49,7 +49,7 @@ const Login = () => {
   };
 
   return (
-    <div className="bg-[url('https://wallpapercave.com/wp/wp14129828.jpg')] min-h-screen bg-cover bg-center bg-no-repeat bg-fixed w-screen">
+    <div className="bg-[url('https://images.hdqwalls.com/download/minimalist-landscape-to-1920x1080.jpg')] min-h-screen bg-cover bg-center bg-no-repeat bg-fixed w-screen">
       <div className="bg-black/60 h-screen w-screen flex justify-center items-center">
         <div className="flex flex-col justify-center items-center bg-white/60 gap-5 rounded-lg px-4 py-7  sm:w-[50%] w-[70%] md:w-[40%] lg:w-[30%]">
           <span className="text-2xl mt-2 mb-2">Login</span>
@@ -76,7 +76,7 @@ const Login = () => {
             />
 
             <button
-              className="bg-cyan-800 px-3 py-1 w-full text rounded-2xl text-white hover:bg-cyan-700"
+              className="bg-slate-900 px-3 py-1 w-full text rounded-2xl text-white hover:bg-slate-950"
               type="submit"
               disabled={isFetching}
             >

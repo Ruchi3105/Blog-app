@@ -81,7 +81,7 @@ const Settings = () => {
       email,
     };
 
-    if (password.length > 0) updatedUser.password = password;
+    if (password && password.trim().length >= 6) updatedUser.password = password;
 
     if (file) {
       const imageUrl = await uploadToCloudinary(file);
@@ -133,143 +133,140 @@ const Settings = () => {
   };
 
   return (
-    <div className="bg-[url('https://digitalsynopsis.com/wp-content/uploads/2017/02/beautiful-color-gradients-backgrounds-047-fly-high.png')] h-screen bg-cover bg-center bg-no-repeat bg-fixed w-screen flex justify-center items-center relative overflow-auto">
-      <div className="flex flex-col justify-center items-center bg-white rounded-2xl px-10 mx-2 mb-2 py-10 absolute top-20 w-[90%] sm:w-[80%] md:w-[50%] lg:w-[70%] xl:w-[60%] 2xl:w-[50%]">
-        <h1 className="text-2xl mb-4 font-bold text-center">
-          Welcome, {username}
-        </h1>
-        {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
-        {success && <p className="text-green-500 text-sm mb-3">{success}</p>}
-        <form
-          action=""
-          onSubmit={handleSubmit}
-          className="flex sm:flex-col lg:flex-row flex-col justify-center items-center gap-8"
-        >
-          <div className="flex flex-col justify-center items-center gap-3">
-            <img
-              className="h-40 w-40 rounded-xl mb-3"
-              src={
-                file
-                  ? URL.createObjectURL(file)
-                  : profilePic
-              }
-              alt=""
-            />
-            {isEditing && (
-              <label htmlFor="fileInput" className="cursor-pointer ">
-                <Upload className="bg-blue-200 h-7 w-7 p-1 rounded-sm hover:bg-blue-300" />
-              </label>
-            )}
+  <div className="bg-gradient-to-br from-indigo-100 via-indigo-200 to-indigo-300 min-h-screen flex justify-center items-center overflow-auto w-screen">
+    <div className="bg-white shadow-xl rounded-2xl px-8 py-10 w-[90%] sm:w-[80%] md:w-[60%] lg:w-[50%] xl:w-[40%] mt-25 mb-20">
+      <h1 className="text-2xl font-semibold text-center text-indigo-800 mb-6">
+        Welcome, {username}
+      </h1>
+
+      {error && <p className="text-red-600 text-sm text-center mb-2">{error}</p>}
+      {success && <p className="text-green-600 text-sm text-center mb-2">{success}</p>}
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Profile Pic Upload */}
+        <div className="flex flex-col items-center gap-3">
+          <img
+            className="h-32 w-32 rounded-full object-cover shadow border-2 border-indigo-300"
+            src={file ? URL.createObjectURL(file) : profilePic}
+            alt="profile"
+          />
+          {isEditing && (
+            <label
+              htmlFor="fileInput"
+              className="text-indigo-600 hover:text-indigo-800 cursor-pointer text-sm"
+            >
+              <Upload className="inline-block mr-1" /> Change Profile Picture
+            </label>
+          )}
+          <input
+            type="file"
+            id="fileInput"
+            onChange={handleFileChange}
+            className="hidden"
+            disabled={!isEditing}
+          />
+        </div>
+
+        {/* Form Inputs */}
+        <div className="space-y-4">
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium text-gray-700">Username</label>
             <input
-              type="file"
-              id="fileInput"
-              onChange={(e) => setFile(e.target.files[0])}
-              className="hidden"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               disabled={!isEditing}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
+              required
             />
           </div>
 
-          <div className="flex flex-col gap-6 justify-center items-center text-sm">
-            <div className="flex gap-5 justify-center items-center w-full">
-              <label htmlFor="" className="font-semibold">
-                Username:
-              </label>
-              <input
-                className="border-[1px] border-blue-400 px-2 py-1 rounded placeholder:text-sm text-blue-900"
-                type="text"
-                onChange={(e) => setUsername(e.target.value)}
-                value={username}
-                required
-                disabled={!isEditing}
-              />
-            </div>
-
-            <div className="flex gap-11 justify-center items-center ">
-              <label htmlFor="" className="font-semibold">
-                E-mail:
-              </label>
-              <input
-                className="border-[1px] border-blue-400 px-2 py-1 rounded placeholder:text-sm text-blue-900"
-                type="email"
-                onChange={(e) => setEmail(e.target.value)}
-                value={email}
-                required
-                disabled={!isEditing}
-              />
-            </div>
-
-            <div className="flex gap-5 justify-center items-center">
-              <label htmlFor="" className="font-semibold">
-                Password:
-              </label>
-              <input
-                className="border-[1px] border-blue-400 px-2 py-1 rounded placeholder:text-sm text-blue-900"
-                type="password"
-                onChange={(e) => setPassword(e.target.value)}
-                value={password}
-                disabled={!isEditing}
-              />
-            </div>
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium text-gray-700">Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={!isEditing}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
+              required
+            />
           </div>
 
-          <div className="flex flex-col justify-center items-center gap-4">
-            <div className="flex p-4 gap-10">
-              <UserRoundPen
-                className="bg-blue-200 h-8 w-8 p-2 rounded-lg transition-all duration-300 hover:rounded-full cursor-pointer text-green-700"
-                onClick={handleEdit}
-              />
-              <Trash2
-                className="bg-blue-200 h-8 w-8 p-2 rounded-lg transition-all duration-300 hover:rounded-full cursor-pointer text-red-700"
-                onClick={() => setShowDeleteModal(true)}
-              />
-            </div>
-
-            {isEditing && (
-              <button
-                type="submit"
-                className="bg-blue-900 text-white px-3 py-1 rounded-md hover:bg-slate-900 transition-all duration-300 text-sm"
-              >
-                {success ? "Updated" : "Update"}
-              </button>
-            )}
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium text-gray-700">Password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              disabled={!isEditing}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
+              placeholder="Leave empty to keep unchanged"
+            />
           </div>
-        </form>
-        {showDeleteModal && (
-          <>
-            {/* Overlay with dark blur */}
-            <div className="fixed inset-0 bg-black/50 bg-opacity-50 backdrop-blur-sm z-40"></div>
+        </div>
 
-            {/* Modal */}
-            <div className="fixed z-50 inset-0 flex items-center justify-center">
-              <div className="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-6 w-[90%] max-w-md relative">
-                <h2 className="text-xl font-semibold text-center text-gray-800 dark:text-gray-100">
-                  Confirm Deletion
-                </h2>
-                <p className="text-sm text-center mt-2 mb-4 text-gray-600 dark:text-gray-300">
-                  Are you sure you want to delete your account? This action
-                  cannot be undone.
-                </p>
-                <div className="flex justify-between gap-4">
-                  <button
-                    className="flex-1 py-2 px-4 bg-red-600 text-white rounded hover:bg-red-700 transition duration-200"
-                    onClick={handleDeleteConfirmed}
-                  >
-                    Yes, Delete
-                  </button>
-                  <button
-                    className="flex-1 py-2 px-4 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 transition duration-200"
-                    onClick={() => setShowDeleteModal(false)}
-                  >
-                    Cancel
-                  </button>
-                </div>
+        {/* Action Buttons */}
+        <div className="flex justify-between items-center pt-4">
+          <div className="flex gap-4">
+            <UserRoundPen
+              className="h-8 w-8 p-1.5 bg-indigo-100 text-indigo-700 rounded-md hover:bg-indigo-200 cursor-pointer transition"
+              onClick={handleEdit}
+              title="Edit"
+            />
+            <Trash2
+              className="h-8 w-8 p-1.5 bg-red-100 text-red-600 rounded-md hover:bg-red-200 cursor-pointer transition"
+              onClick={() => setShowDeleteModal(true)}
+              title="Delete Account"
+            />
+          </div>
+
+          {isEditing && (
+            <button
+              type="submit"
+              className="px-4 py-2 bg-indigo-700 text-white rounded-md text-sm hover:bg-indigo-800 transition"
+            >
+              {success ? "Updated" : "Update"}
+            </button>
+          )}
+        </div>
+      </form>
+
+      {/* Delete Modal */}
+      {showDeleteModal && (
+        <>
+          <div className="fixed inset-0 bg-black/50 bg-opacity-50 backdrop-blur-sm z-40"></div>
+
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
+            <div className="bg-white rounded-xl p-6 shadow-lg w-[90%] max-w-md">
+              <h2 className="text-lg font-semibold text-gray-800 text-center">
+                Confirm Deletion
+              </h2>
+              <p className="text-sm text-gray-600 text-center mt-2">
+                Your posts will also be deleted. Are you sure you want to delete your account? This cannot be undone.
+              </p>
+              <div className="mt-4 flex gap-4">
+                <button
+                  onClick={handleDeleteConfirmed}
+                  className="flex-1 bg-red-600 text-white py-2 rounded hover:bg-red-700 transition"
+                >
+                  Yes, Delete
+                </button>
+                <button
+                  onClick={() => setShowDeleteModal(false)}
+                  className="flex-1 bg-gray-200 text-gray-800 py-2 rounded hover:bg-gray-300 transition"
+                >
+                  Cancel
+                </button>
               </div>
             </div>
-          </>
-        )}
-      </div>
+          </div>
+        </>
+      )}
     </div>
-  );
+  </div>
+);
+
 };
 
 export default Settings;

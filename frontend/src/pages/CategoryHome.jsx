@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import CategoryCard from "../components/CategoryCard";
 import axios from "axios";
-import { Context } from "../../context/Context";
 import { Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -16,11 +15,23 @@ const CategoryHome = () => {
     fetchCategory();
   }, []);
   return (
-    <div className="bg-blue-200 w-screen min-h-screen">
-      <div className="min-h-screen w-screen relative top-24 bg-blue-200 pb-5">
+    <div className="min-h-screen bg-ingido-100 overflow-x-hidden w-screen">
+      <div className="flex flex-col justify-center items-center pt-20 px-4 sm:px-8 md:px-16 max-w-screen-xl mx-auto mb-8">
+
+        {/* Hero/Header Section */}
+        <section className="text-center mb-8 mt-10">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 mb-4">
+            Explore <span className="text-indigo-600">Categories</span>
+          </h1>
+          <p className="text-gray-600 max-w-2xl mx-auto text-lg">
+            Dive into diverse topics curated by creators. Click on any category to discover blogs written on that theme.
+          </p>
+        </section>
+
+
         {categories.length > 0 ? (
           <div className="flex justify-center items-center">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {categories.map((c, i) => (
                 <CategoryCard key={i} category={c} />
               ))}
@@ -31,7 +42,7 @@ const CategoryHome = () => {
         )}
 
         <Link
-          className="fixed bottom-10 right-6 bg-blue-600 text-white p-4 rounded-full shadow-lg cursor-pointer hover:bg-blue-700 transition"
+          className="fixed bottom-10 right-6 bg-indigo-600 text-white p-4 rounded-full shadow-lg cursor-pointer hover:bg-indigo-700 transition"
           to="/add-category"
         >
           <Plus size={30} />

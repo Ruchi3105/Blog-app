@@ -12,6 +12,7 @@ import Header from "./components/Header";
 import About from "./pages/About";
 import AddCat from "./pages/AddCat";
 import CategoryHome from "./pages/CategoryHome";
+import Footer from "./pages/Footer";
 
 const App = () => {
   const { user } = useContext(Context);
@@ -30,6 +31,7 @@ const App = () => {
         <Route path="/settings" element={user ? <Settings /> : <Login />} />
         <Route path="/post/:postId" element={<Single />} />
       </Routes>
+      <Footer/>
     </div>
   );
 };

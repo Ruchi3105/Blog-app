@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const Header = () => {
   return (
-    <div className=" bg-[url('https://4kwallpapers.com/images/wallpapers/baros-maldives-island-seascape-tropical-beach-blue-sky-3840x2160-4325.jpg')] h-screen bg-cover bg-center bg-no-repeat bg-fixed w-screen">
+    <div className=" bg-[url('https://wallpapercave.com/wp/wp6337253.jpg')] h-screen bg-cover bg-center bg-no-repeat bg-fixed w-screen">
       <div className="bg-black/50 h-screen">
         <div className="h-full flex flex-col justify-center items-center z-50 gap-3">
           <div className="w-[90%]">

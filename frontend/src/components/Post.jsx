@@ -1,44 +1,56 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { Calendar, User2 } from "lucide-react";
 
 const Post = ({ post }) => {
-  // Use Cloudinary URL if available; otherwise, fallback to a default placeholder
-  const imageUrl = post.photo.startsWith("http")
+  const imageUrl = post.photo?.startsWith("http")
     ? post.photo
-    : "https://via.placeholder.com/300"; // Fallback image if no photo available
+    : "https://source.unsplash.com/featured/?blog,tech";
+
+  const authorName = post.username || "Guest Author";
+  const postDate = new Date(post.createdAt).toLocaleDateString("en-GB", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
 
   return (
-    <div className="cursor-pointer group relative flex flex-col bg-white shadow-sm border border-slate-200 rounded-lg w-80 hover:shadow-lg transition-shadow duration-300">
-      <div className="relative h-56 m-2.5 overflow-hidden text-white rounded-md">
+    <div className="max-w-md w-full bg-white border border-gray-200 rounded-3xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col">
+      {/* Image */}
+      <div className="relative w-full h-52 overflow-hidden">
         <img
-          className="transition-transform duration-500 ease-[cubic-bezier(0.25, 1, 0.5, 1)] transform group-hover:scale-110 object-cover w-full h-full"
           src={imageUrl}
-          alt="Post"
+          alt="Post Cover"
+          className="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
         />
       </div>
 
-      <div className="px-4 py-3">
-        <h6 className="mb-2 text-slate-800 text-xl font-semibold">
+      {/* Content */}
+      <div className="p-6 flex flex-col justify-between flex-1">
+        <div className="flex items-center justify-between mb-3 text-xs text-gray-500">
+          <div className="flex items-center gap-2">
+            <User2 className="w-4 h-4" />
+            <span>{authorName}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Calendar className="w-4 h-4" />
+            <span>{postDate}</span>
+          </div>
+        </div>
+
+        <h3 className="text-lg font-semibold text-gray-900 leading-snug mb-2 line-clamp-2 hover:text-indigo-700 transition-colors">
           {post.title}
-        </h6>
-        <p className="text-slate-600 leading-normal font-light">
-          {post.desc.split(" ").length > 20
-            ? post.desc.split(" ").slice(0, 20).join(" ") + "..."
-            : post.desc}
+        </h3>
+
+        <p className="text-sm text-gray-600 font-light mb-4 line-clamp-3">
+          {post.summary}
         </p>
-      </div>
 
-      <div className="px-4 text-sm text-slate-400 self-end">
-        <span>{new Date(post.createdAt).toDateString()}</span>
-      </div>
-
-      <div className="px-4 pb-6 pt-0 mt-2">
         <Link
           to={`/post/${post._id}`}
-          className="rounded-md bg-slate-800 py-2.5 px-3.5 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-slate-700 focus:shadow-none active:bg-slate-700 hover:bg-slate-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-          type="button"
+          className="mt-auto w-full inline-block text-center bg-indigo-700 text-white font-medium py-2.5 rounded-xl text-sm hover:bg-indigo-800 transition-all duration-300 shadow-sm"
         >
-          Read article
+          Read Article →
         </Link>
       </div>
     </div>

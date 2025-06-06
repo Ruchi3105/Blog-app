@@ -52,7 +52,7 @@ const Register = () => {
     }
   };
   return (
-    <div className="bg-[url('https://images5.alphacoders.com/421/421870.jpg')] min-h-screen bg-cover bg-center bg-no-repeat bg-fixed w-screen">
+    <div className="bg-[url('https://applescoop.org/image/wallpapers/mac/12165082296265337-64964762781867179.jpg')] min-h-screen bg-cover bg-center bg-no-repeat bg-fixed w-screen">
       <div className="bg-black/60 h-screen w-screen flex justify-center items-center">
         <div className="flex flex-col justify-center items-center bg-white/70 px-4 py-7 sm:w-[55%] w-[98%] md:w-[45%] lg:w-[35%] gap-5 rounded-lg">
           <h1 className="text-2xl mb-2 mt-2">Create Account</h1>
@@ -100,7 +100,7 @@ const Register = () => {
             </div>
 
             <button
-              className="bg-cyan-800 px-3 py-1 mt-2 w-[70%] text rounded-2xl text-white hover:bg-cyan-700 cursor-pointer"
+              className="bg-slate-900 px-3 py-1 mt-2 w-[70%] text rounded-2xl text-white hover:bg-slate-950 cursor-pointer"
               type="submit"
             >
               Create Account

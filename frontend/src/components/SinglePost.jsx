@@ -3,6 +3,7 @@ import { SquarePen, Trash } from "lucide-react";
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Context } from "../../context/Context";
+import CommentList from "./CommentList";
 
 const SinglePost = () => {
   const location = useLocation();
@@ -17,6 +18,7 @@ const SinglePost = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [updating, setUpdating] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -72,7 +74,7 @@ const SinglePost = () => {
         { withCredentials: true }
       );
       setUpdateMode(false);
-      setPost((prev) => ({ ...prev, title, desc })); // Update local state
+      setPost((prev) => ({ ...prev, title, desc }));
     } catch (err) {
       console.error("Error updating post:", err);
       alert("Failed to update post. Please try again.");
@@ -82,97 +84,88 @@ const SinglePost = () => {
   };
 
   return (
-    <div className="w-screen flex items-center">
-      <div className="w-[100%] sm:w-[90%] md:w-[80%] lg:w-[70%] mx-auto p-6 bg-white shadow-lg rounded-lg mt-20">
+    <div className="w-full px-4 flex items-center flex-col">
+      <div className="w-full sm:w-[90%] md:w-[80%] lg:w-[70%] mx-auto p-8 bg-white shadow-lg rounded-3xl mt-20 border border-gray-200">
         {loading ? (
-          <p className="text-center text-gray-600">Loading post...</p>
+          <p className="text-center text-gray-600 text-lg">Loading post...</p>
         ) : error ? (
-          <p className="text-center text-red-600">{error}</p>
+          <p className="text-center text-red-600 text-lg font-medium">{error}</p>
         ) : (
           <>
-            {/* Post Image */}
             {post.photo && (
               <img
                 src={post.photo}
                 alt="Post"
-                className="w-full h-80 object-cover rounded-md mb-6"
+                className="w-full h-[20rem] object-cover rounded-xl mb-6 shadow-sm"
               />
             )}
 
-            {/* Author & Date */}
-            <div className="flex items-center justify-between text-gray-600 text-lg capitalize mb-4">
-              <Link to={`/blogs/?users=${post.username}`}>
-                <span>Author: </span>
-                <span className="font-semibold hover:text-blue-600">
-                  {post.username}
-                </span>
+            <div className="flex flex-wrap items-center justify-between text-sm text-gray-500 mb-4">
+              <Link to={`/blogs/?users=${post.username}`} className="hover:text-indigo-600">
+                Author: <span className="font-semibold text-gray-700">{post.username}</span>
               </Link>
               <span>{new Date(post.createdAt).toDateString()}</span>
             </div>
 
-            {/* Title & Actions */}
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex justify-between items-center mb-6">
               {updateMode ? (
                 <input
                   type="text"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   autoFocus
-                  className="w-full text-2xl font-semibold border-b-2 border-blue-500 outline-none p-1"
+                  className="w-full text-2xl font-bold border-b-2 border-indigo-500 outline-none p-2 text-gray-800"
                 />
               ) : (
-                <h1 className="text-3xl font-bold text-gray-900">{title}</h1>
+                <h1 className="text-3xl font-bold text-gray-900 leading-snug">{title}</h1>
               )}
 
               {post.username === user?.username && (
-                <div className="flex gap-3 m-2 sm:flex-row flex-col">
+                <div className="flex gap-3 ml-4">
                   <SquarePen
-                    className="text-blue-600 cursor-pointer hover:scale-110 transition-all"
+                    className="text-indigo-600 cursor-pointer hover:scale-110 transition-transform"
                     size={24}
                     onClick={() => setUpdateMode(true)}
                   />
                   <Trash
-                    className="text-red-600 cursor-pointer hover:scale-110 transition-all"
+                    className="text-red-600 cursor-pointer hover:scale-110 transition-transform"
                     size={24}
-                    onClick={handleDelete}
+                    onClick={() => setShowDeleteConfirm(true)}
                   />
                 </div>
               )}
             </div>
 
-            <hr className="border-gray-300 my-4" />
+            <hr className="border-gray-300 mb-6" />
 
-            {/* Description */}
-            <div className="text-gray-700 text-lg leading-7 text-justify">
+            <div className="text-gray-800 text-[1.05rem] leading-7">
               {updateMode ? (
                 <textarea
                   value={desc}
                   onChange={(e) => setDesc(e.target.value)}
-                  autoFocus
                   rows={10}
-                  className="w-full p-3 border border-gray-300 rounded-md outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                  className="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
                 ></textarea>
               ) : (
-                <p>{desc}</p>
+                <p className="whitespace-pre-wrap text-justify">{desc}</p>
               )}
             </div>
 
-            {/* Buttons */}
             {updateMode && (
-              <div className="mt-4 flex justify-end gap-3">
+              <div className="mt-6 flex justify-end gap-4">
                 <button
                   onClick={() => setUpdateMode(false)}
-                  className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition"
+                  className="px-5 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition"
                   disabled={updating}
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleUpdate}
-                  className={`px-4 py-2 rounded-md text-white transition ${
+                  className={`px-5 py-2 rounded-md text-white transition font-medium text-sm ${
                     updating
                       ? "bg-gray-400 cursor-not-allowed"
-                      : "bg-blue-600 hover:bg-blue-700"
+                      : "bg-indigo-600 hover:bg-indigo-700"
                   }`}
                   disabled={updating}
                 >
@@ -183,6 +176,36 @@ const SinglePost = () => {
           </>
         )}
       </div>
+
+      {!loading && post._id && <CommentList postId={post._id} />}
+
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-black/50 bg-opacity-50 backdrop-blur-sm flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded-2xl shadow-xl w-80 text-center">
+            <h2 className="text-xl font-bold mb-3 text-gray-800">Are you sure?</h2>
+            <p className="text-gray-600 mb-6 text-sm">
+              This action will permanently delete your post.
+            </p>
+            <div className="flex justify-evenly">
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                className="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500 transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  setShowDeleteConfirm(false);
+                  handleDelete();
+                }}
+                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

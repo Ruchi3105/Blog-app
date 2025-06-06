@@ -4,3 +4,22 @@
   box-sizing: border-box;
   font-family:sans-serif;
 }
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+/* Optional background texture */
+.bg-pattern {
+  background-image: url('/grid.svg'); /* or a noise texture */
+  background-repeat: repeat;
+  opacity: 0.04;
+  pointer-events: none;
+  z-index: 0;
+  position: absolute;
+  inset: 0;
+}
